@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PokemonCard from './PokemonCard';
 
-
 const App = () => {
   const [pokemonData, setPokemonData] = useState([]);
   const [detailedPokemon, setDetailedPokemon] = useState({});
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,8 +26,10 @@ const App = () => {
         }, {});
         
         setDetailedPokemon(detailedPokemonMap);
+        setLoading(false); // Set loading to false after data is fetched
       } catch (error) {
         console.error('Error fetching data:', error);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
     fetchData();
@@ -44,26 +46,29 @@ const App = () => {
   return (
     <div className="App">
       <header className="flex flex-col gap-6 items-center p-2">
-        <h1 className='text-3xl font-extrabold'>Pokemon Cards</h1>
+        <h1 className="text-3xl font-extrabold">Pokémon Cards</h1>
         
         <input
-          className='border border-black w-full h-10 pl-4 md:w-96'
+          className="border border-black w-full h-10 pl-4 md:w-96"
           type="text"
-          placeholder="Search Pokemon..."
+          placeholder="Search Pokémon..."
           onChange={handleSearchChange}
         />
         
-        <div className="flex flex-wrap gap-4 justify-center">
-          {filteredPokemon.map(pokemon => (
-            <PokemonCard key={pokemon.name} pokemon={detailedPokemon[pokemon.name]} />
-          ))}
-        </div>
+        {loading ? (
+          // Display loader when loading is true
+          <div className="text-3xl font-extrabold ">Loading...</div>
+        ) : (
+          // Display Pokémon cards when loading is false
+          <div className="flex flex-wrap gap-4 justify-center">
+            {filteredPokemon.map(pokemon => (
+              <PokemonCard key={pokemon.name} pokemon={detailedPokemon[pokemon.name]} />
+            ))}
+          </div>
+        )}
       </header>
     </div>
   );
 };
-
-
-
 
 export default App;
